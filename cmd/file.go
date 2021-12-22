@@ -1,41 +1,14 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strconv"
+	"os"
 )
 
-func InformationData() {
-	var init int
-	var finish int
-	var desc string
-
-	fmt.Print("idcobertura para inicar: ")
-	fmt.Scanf("%d\n", &init)
-
-	fmt.Print("Datos restantes: ")
-	fmt.Scanf("%d\n", &finish)
-
-	for i := init; i <= (init + finish); i++ {
-		fmt.Print("Ingres la descripcion: ")
-		fmt.Scanf("%s", &desc)
-		test(strconv.Itoa(i))
-		//d := data{"inserCoberturas", "SINIESTROS ANTERIORES AL INICIO DE VIGENCIA.", strconv.Itoa(i)}
-		//cmd.GenerateNewFileSQL(d.nameFile, d.description, d.idcobertura)
-	}
-}
-
-func test(lines string) {
-	b := []byte(lines)
-
-	err := ioutil.WriteFile("test.txt", b, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
+//GenerateNewFileSQL genera el sql basado en un scriptsql base
 func GenerateNewFileSQL(nameFile string, description string, idcobertura string) {
 	s := `INSERT INTO seguros.cobertura 
 (idcobertura, tipo, codigo, descripcion, suma, prima, tasa, deducible_mto, 
@@ -63,4 +36,34 @@ INSERT INTO seguros.plantilla_ramo_cobertura
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+//JoinFile une los archivos
+func JoinFile(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
+// writeLines writes the lines to the given file.
+func WriteLines(lines []string, path string) error {
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	w := bufio.NewWriter(file)
+	for _, line := range lines {
+		fmt.Fprintln(w, line)
+	}
+	return w.Flush()
 }
