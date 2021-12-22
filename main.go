@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/KenethSandoval/sobuxa/cmd"
 )
 
@@ -12,6 +15,17 @@ type data struct {
 
 func main() {
 	//cmd.InformationData()
-	d := data{"inserCoberturas", "SINIESTROS ANTERIORES AL INICIO DE VIGENCIA.", "532"}
-	cmd.GenerateNewFileSQL(d.nameFile, d.description, d.idcobertura)
+	var init int = 538
+	var d data
+	var desc string
+
+	for i := 538; i <= (init + 2); i++ {
+		d = data{
+			"inserCoberturas" + strconv.Itoa(i),
+			desc,
+			strconv.Itoa(i),
+		}
+		fmt.Println(d)
+		cmd.GenerateNewFileSQL(d.nameFile, d.description, d.idcobertura)
+	}
 }
