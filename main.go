@@ -1,7 +1,11 @@
 package main
 
-import "github.com/KenethSandoval/sobuxa/cmd"
+import (
+	"fmt"
+	"github.com/KenethSandoval/sobuxa/cmd"
+)
 
 func main() {
+	fmt.Println("Init program")
 	cmd.InitCMD()
 }
